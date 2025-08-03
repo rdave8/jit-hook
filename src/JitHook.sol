@@ -57,12 +57,12 @@ contract JitHook is BaseHook {
         return BaseHook.beforeInitialize.selector;
     }
 
-    function _beforeAddLiquidity(
-        address sender,
-        PoolKey calldata,
-        ModifyLiquidityParams calldata,
-        bytes calldata
-    ) internal view override returns (bytes4) {
+    function _beforeAddLiquidity(address sender, PoolKey calldata, ModifyLiquidityParams calldata, bytes calldata)
+        internal
+        view
+        override
+        returns (bytes4)
+    {
         if (sender != address(positionManager)) revert UnauthorizedPositionManager();
         if (IMsgSender(sender).msgSender() != address(this)) revert UnauthorizedLP();
 

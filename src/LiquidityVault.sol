@@ -20,14 +20,22 @@ contract LiquidityVault is ERC20 {
 
     IPoolManager immutable poolManager;
     PoolId poolId;
-    
+
     IERC20 immutable token0;
     IERC20 immutable token1;
 
     uint160 immutable minSqrtPriceX96;
     uint160 immutable maxSqrtPriceX96;
 
-    constructor(IPoolManager _poolManager, PoolKey memory _poolKey, address _hook, IERC20 _token0, IERC20 _token1, string memory vaultTokenName, string memory vaultTokenSymbol) ERC20(vaultTokenName, vaultTokenSymbol) {
+    constructor(
+        IPoolManager _poolManager,
+        PoolKey memory _poolKey,
+        address _hook,
+        IERC20 _token0,
+        IERC20 _token1,
+        string memory vaultTokenName,
+        string memory vaultTokenSymbol
+    ) ERC20(vaultTokenName, vaultTokenSymbol) {
         poolManager = _poolManager;
         poolId = _poolKey.toId();
         token0 = _token0;
@@ -66,16 +74,10 @@ contract LiquidityVault is ERC20 {
     }
 
     function amountsToLiquidity(uint256 amount0, uint256 amount1) internal view returns (uint256) {
-        (,int24 tick,,) = poolManager.getSlot0(poolId);
+        (, int24 tick,,) = poolManager.getSlot0(poolId);
         uint160 sqrtPriceX96 = TickMath.getSqrtPriceAtTick(tick);
 
-        return LiquidityAmounts.getLiquidityForAmounts(
-            sqrtPriceX96,
-            minSqrtPriceX96,
-            maxSqrtPriceX96,
-            amount0,
-            amount1
-        );
+        return LiquidityAmounts.getLiquidityForAmounts(sqrtPriceX96, minSqrtPriceX96, maxSqrtPriceX96, amount0, amount1);
     }
 
     function totalLiquidity() internal view returns (uint256) {

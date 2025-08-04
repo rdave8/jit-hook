@@ -74,8 +74,8 @@ contract LiquidityVault is ERC20 {
     }
 
     function amountsToLiquidity(uint256 amount0, uint256 amount1) internal view returns (uint256) {
-        (, int24 tick,,) = poolManager.getSlot0(poolId);
-        uint160 sqrtPriceX96 = TickMath.getSqrtPriceAtTick(tick);
+        (uint160 sqrtPriceX96,,,) = poolManager.getSlot0(poolId);
+        int24 tick = TickMath.getTickAtSqrtPrice(sqrtPriceX96);
 
         return LiquidityAmounts.getLiquidityForAmounts(sqrtPriceX96, minSqrtPriceX96, maxSqrtPriceX96, amount0, amount1);
     }
